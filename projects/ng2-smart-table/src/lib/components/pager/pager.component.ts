@@ -65,7 +65,7 @@ export class PagerComponent implements OnChanges {
 
   @Input() source: DataSource;
   @Input() perPageSelect: any[] = [];
-
+  @Input() paginateSize:number;
   @Output() changePage = new EventEmitter<any>();
 
   currentPerPage: any;
@@ -74,6 +74,7 @@ export class PagerComponent implements OnChanges {
   protected page: number;
   protected count: number = 0;
   protected perPage: number;
+  // protected paginateSizes: number;
 
   protected dataChangedSub: Subscription;
 
@@ -85,6 +86,7 @@ export class PagerComponent implements OnChanges {
       this.dataChangedSub = this.source.onChanged().subscribe((dataChanges) => {
         this.page = this.source.getPaging().page;
         this.perPage = this.source.getPaging().perPage;
+        // this.paginateSizes = this.source.getPaging().paginateSize;
         this.currentPerPage = this.perPage;
         this.count = this.source.count();
         if (this.isPageOutOfBounce()) {
@@ -149,7 +151,9 @@ export class PagerComponent implements OnChanges {
 
   initPages() {
     const pagesCount = this.getLast();
-    let showPagesCount = 4;
+    // let aaa = this.paginateSize["pager"]["paginateSize"]
+    // let showPagesCount = this.paginateSizes == undefined ? this.paginateSizes : this.paginateSize;
+    let showPagesCount = this.paginateSize["pager"]["paginateSize"];
     showPagesCount = pagesCount < showPagesCount ? pagesCount : showPagesCount;
     this.pages = [];
 

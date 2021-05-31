@@ -200,6 +200,13 @@ export class LocalDataSource extends DataSource {
     return this;
   }
 
+  setPaginateSize(page: number, doEmit: boolean = true, paginateSize: number): LocalDataSource {
+    this.pagingConf['page'] = page;
+    this.pagingConf['paginateSize'] = paginateSize;
+    super.setPage(page, doEmit);
+    return this;
+  }
+
   getSort(): any {
     return this.sortConf;
   }
