@@ -35,3 +35,25 @@
     line-height: 2.5rem;
   }
 }
+
+.jump-to-page {
+  width: 11%;
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+input.jump-to-page::-webkit-outer-spin-button,
+input.jump-to-page::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.go-btn 
+{
+  margin-right: 10px;
+}
+
+.text-go-to-page{
+  margin-top: 3px;
+}

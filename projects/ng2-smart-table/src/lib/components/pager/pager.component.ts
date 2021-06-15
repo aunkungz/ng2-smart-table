@@ -7,58 +7,62 @@ import { DataSource } from '../../lib/data-source/data-source';
   selector: 'ng2-smart-table-pager',
   styleUrls: ['./pager.component.scss'],
   template: `
-    <nav *ngIf="shouldShow()" class="ng2-smart-pagination-nav">
-      <ul class="ng2-smart-pagination pagination">
-        <li class="ng2-smart-page-item page-item" [ngClass]="{disabled: getPage() == 1}">
-          <a class="ng2-smart-page-link page-link" href="#"
-          (click)="getPage() == 1 ? false : paginate(1)" aria-label="First">
-            <span aria-hidden="true">&laquo;</span>
-            <span class="sr-only">First</span>
-          </a>
-        </li>
-        <li class="ng2-smart-page-item page-item" [ngClass]="{disabled: getPage() == 1}">
-          <a class="ng2-smart-page-link page-link page-link-prev" href="#"
-             (click)="getPage() == 1 ? false : prev()" aria-label="Prev">
-            <span aria-hidden="true">&lt;</span>
-            <span class="sr-only">Prev</span>
-          </a>
-        </li>
-        <li class="ng2-smart-page-item page-item"
-        [ngClass]="{active: getPage() == page}" *ngFor="let page of getPages()">
-          <span class="ng2-smart-page-link page-link"
-          *ngIf="getPage() == page">{{ page }} <span class="sr-only">(current)</span></span>
-          <a class="ng2-smart-page-link page-link" href="#"
-          (click)="paginate(page)" *ngIf="getPage() != page">{{ page }}</a>
-        </li>
+      
+      <nav *ngIf="shouldShow()" class="ng2-smart-pagination-nav">
+        <ul class="ng2-smart-pagination pagination">
+          <span class="text-go-to-page" *ngIf="hasJumpToPage"> Go to page </span>
+          <input type="number" *ngIf="hasJumpToPage" class="form-control jump-to-page" (keyup.enter)="jumpToPage()" [(ngModel)]="jumpPage" placeholder=""/>
+          <button type="button" class="go-btn" *ngIf="hasJumpToPage" (click)="jumpToPage()">Go</button>
+          <li class="ng2-smart-page-item page-item" [ngClass]="{disabled: getPage() == 1}">
+            <a class="ng2-smart-page-link page-link" href="#"
+            (click)="getPage() == 1 ? false : paginate(1)" aria-label="First">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">First</span>
+            </a>
+          </li>
+          <li class="ng2-smart-page-item page-item" [ngClass]="{disabled: getPage() == 1}">
+            <a class="ng2-smart-page-link page-link page-link-prev" href="#"
+              (click)="getPage() == 1 ? false : prev()" aria-label="Prev">
+              <span aria-hidden="true">&lt;</span>
+              <span class="sr-only">Prev</span>
+            </a>
+          </li>
+          <li class="ng2-smart-page-item page-item"
+          [ngClass]="{active: getPage() == page}" *ngFor="let page of getPages()">
+            <span class="ng2-smart-page-link page-link"
+            *ngIf="getPage() == page">{{ page }} <span class="sr-only">(current)</span></span>
+            <a class="ng2-smart-page-link page-link" href="#"
+            (click)="paginate(page)" *ngIf="getPage() != page">{{ page }}</a>
+          </li>
 
-        <li class="ng2-smart-page-item page-item"
-            [ngClass]="{disabled: getPage() == getLast()}">
-          <a class="ng2-smart-page-link page-link page-link-next" href="#"
-             (click)="getPage() == getLast() ? false : next()" aria-label="Next">
-            <span aria-hidden="true">&gt;</span>
-            <span class="sr-only">Next</span>
-          </a>
-        </li>
-        
-        <li class="ng2-smart-page-item page-item"
-        [ngClass]="{disabled: getPage() == getLast()}">
-          <a class="ng2-smart-page-link page-link" href="#"
-          (click)="getPage() == getLast() ? false : paginate(getLast())" aria-label="Last">
-            <span aria-hidden="true">&raquo;</span>
-            <span class="sr-only">Last</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-    
-    <nav *ngIf="perPageSelect && perPageSelect.length > 0" class="ng2-smart-pagination-per-page">
-      <label for="per-page">
-        Per Page:
-      </label>
-      <select (change)="onChangePerPage($event)" [(ngModel)]="currentPerPage" id="per-page">
-        <option *ngFor="let item of perPageSelect" [value]="item">{{ item }}</option>
-      </select>
-    </nav>
+          <li class="ng2-smart-page-item page-item"
+              [ngClass]="{disabled: getPage() == getLast()}">
+            <a class="ng2-smart-page-link page-link page-link-next" href="#"
+              (click)="getPage() == getLast() ? false : next()" aria-label="Next">
+              <span aria-hidden="true">&gt;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+          
+          <li class="ng2-smart-page-item page-item"
+          [ngClass]="{disabled: getPage() == getLast()}">
+            <a class="ng2-smart-page-link page-link" href="#"
+            (click)="getPage() == getLast() ? false : paginate(getLast())" aria-label="Last">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Last</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <nav *ngIf="perPageSelect && perPageSelect.length > 0" class="ng2-smart-pagination-per-page">
+        <label for="per-page">
+          Per Page:
+        </label>
+        <select (change)="onChangePerPage($event)" [(ngModel)]="currentPerPage" id="per-page">
+          <option *ngFor="let item of perPageSelect" [value]="item">{{ item }}</option>
+        </select>
+      </nav>
   `,
 })
 export class PagerComponent implements OnChanges {
@@ -66,6 +70,7 @@ export class PagerComponent implements OnChanges {
   @Input() source: DataSource;
   @Input() perPageSelect: any[] = [];
   @Input() paginateSize:number;
+  @Input() hasJumpToPage: boolean;
   @Output() changePage = new EventEmitter<any>();
 
   currentPerPage: any;
@@ -74,7 +79,7 @@ export class PagerComponent implements OnChanges {
   protected page: number;
   protected count: number = 0;
   protected perPage: number;
-  // protected paginateSizes: number;
+  jumpPage: number;
 
   protected dataChangedSub: Subscription;
 
@@ -149,10 +154,12 @@ export class PagerComponent implements OnChanges {
     return (this.page * this.perPage) >= (this.count + this.perPage) && this.page > 1;
   }
 
+  jumpToPage(){
+    this.paginate(this.jumpPage);
+  }
+
   initPages() {
     const pagesCount = this.getLast();
-    // let aaa = this.paginateSize["pager"]["paginateSize"]
-    // let showPagesCount = this.paginateSizes == undefined ? this.paginateSizes : this.paginateSize;
     let showPagesCount = this.paginateSize["pager"]["paginateSize"];
     showPagesCount = pagesCount < showPagesCount ? pagesCount : showPagesCount;
     this.pages = [];
